@@ -1,0 +1,80 @@
+//Observer
+
+// Step 1: Observer interface
+interface Observer {
+    void update(String message);
+}
+
+// Step 2: Subject interface
+interface Subject {
+    void subscribe(Observer o);
+    void unsubscribe(Observer o);
+    void notifyObservers(String message);
+}
+
+// Step 3: Concrete Subject (YouTube Channel)
+class YouTubeChannel implements Subject {
+    private List<Observer> subscribers = new ArrayList<>();
+
+    @Override
+    public void subscribe(Observer o) {
+        subscribers.add(o);
+    }
+
+    @Override
+    public void unsubscribe(Observer o) {
+        subscribers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer o : subscribers) {
+            o.update(message); // notify each subscriber
+        }
+    }
+
+    // Business logic - upload a new video
+    public void uploadVideo(String title) {
+        System.out.println("Channel uploaded a new video: " + title);
+        notifyObservers("New Video Alert: " + title);
+    }
+}
+
+// Step 4: Concrete Observer (Subscriber)
+class Subscriber implements Observer {
+    private String name;
+
+    public Subscriber(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void update(String message) {
+        System.out.println(name + " received notification: " + message);
+    }
+}
+
+// Step 5: Client
+public class Main1 {
+    public static void main(String[] args) {
+        YouTubeChannel channel = new YouTubeChannel();
+
+        Observer s1 = new Subscriber("Alice");
+        Observer s2 = new Subscriber("Bob");
+        Observer s3 = new Subscriber("Charlie");
+        // Subscribe to channel
+        channel.subscribe(s1);
+        channel.subscribe(s2);
+        channel.subscribe(s3);
+
+        // Upload a video
+        channel.uploadVideo("Observer Pattern Tutorial");
+
+        // Bob unsubscribes
+        channel.unsubscribe(s2);
+
+        System.out.println("NOTIFICATION");
+        // Upload another video
+        channel.uploadVideo("Design Patterns in Java");
+    }
+}

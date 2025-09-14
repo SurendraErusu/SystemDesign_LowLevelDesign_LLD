@@ -1,0 +1,57 @@
+// PaymentStrategy
+ //interface (defines the common method for all payment types)
+ interface PaymentStrategy {
+    void processPayment(); // Abstract method for processing payments
+}
+
+// Concrete strategy for credit card payment
+ class CreditCardPayment implements PaymentStrategy {
+    public void processPayment() {
+        System.out.println("Processing credit card payment...");
+    }
+}
+
+// Concrete strategy for PayPal payment
+ class PayPalPayment implements PaymentStrategy {
+    public void processPayment() {
+        System.out.println("Processing PayPal payment...");
+    }
+}
+
+// Context class that uses a PaymentStrategy
+ class PaymentProcessor {
+    private PaymentStrategy paymentStrategy; // Reference to a payment strategy
+
+    // Constructor to set the payment strategy
+    public PaymentProcessor(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+
+    // Process payment using the current strategy
+    public void processPayment() {
+        paymentStrategy.processPayment(); // Delegate payment processing to strategy
+    }
+
+    // Dynamically change payment strategy at runtime
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+}
+
+// Client class
+public class Main1 {
+    public static void main(String[] args) {
+        // Create strategy instances for each payment type
+        PaymentStrategy creditCard = new CreditCardPayment();
+        PaymentStrategy payPal = new PayPalPayment();
+
+        // Use the Strategy Pattern to process payments
+        PaymentProcessor processor = new PaymentProcessor(creditCard); 
+        processor.processPayment(); // Processing credit card payment...
+
+        // Dynamically change the payment strategy to PayPal
+        processor.setPaymentStrategy(payPal);
+        processor.processPayment(); // Processing PayPal payment...
+
+    }
+}

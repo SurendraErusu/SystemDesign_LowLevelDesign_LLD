@@ -1,0 +1,200 @@
+//Abstract factory method
+// ---------------- Product Interfaces ----------------
+interface Chair {
+    void sitOn();
+}
+
+interface Sofa {
+    void relaxOn();
+}
+
+// ---------------- Modern Family ----------------
+class ModernChair implements Chair {
+    public void sitOn() {
+        System.out.println("Sitting on a sleek Modern Chair");
+    }
+}
+
+class ModernSofa implements Sofa {
+    public void relaxOn() {
+        System.out.println("Relaxing on a stylish Modern Sofa");
+    }
+}
+
+// ---------------- Traditional Family ----------------
+class TraditionalChair implements Chair {
+    public void sitOn() {
+        System.out.println("Sitting on a classic Traditional Chair");
+    }
+}
+
+class TraditionalSofa implements Sofa {
+    public void relaxOn() {
+        System.out.println("Relaxing on an elegant Traditional Sofa");
+    }
+}
+
+// ---------------- Abstract Factory ----------------
+interface FurnitureFactory {
+    Chair createChair();
+    Sofa createSofa();
+}
+
+// ---------------- Concrete Factories ----------------
+class ModernFurnitureFactory implements FurnitureFactory {
+    public Chair createChair() {
+        return new ModernChair();
+    }
+    public Sofa createSofa() {
+        return new ModernSofa();
+    }
+}
+
+class TraditionalFurnitureFactory implements FurnitureFactory {
+    public Chair createChair() {
+        return new TraditionalChair();
+    }
+    public Sofa createSofa() {
+        return new TraditionalSofa();
+    }
+}
+
+// ---------------- Client ----------------
+public class Main {
+    public static void main(String[] args) {
+        // Choose Modern Furniture
+        FurnitureFactory modernFactory = new ModernFurnitureFactory();
+        Chair modernChair = modernFactory.createChair();
+        Sofa modernSofa = modernFactory.createSofa();
+
+        System.out.println("Modern Furniture:");
+        modernChair.sitOn();
+        modernSofa.relaxOn();
+
+        System.out.println("-----");
+
+        // Choose Traditional Furniture
+        FurnitureFactory traditionalFactory = new TraditionalFurnitureFactory();
+        Chair traditionalChair = traditionalFactory.createChair();
+        Sofa traditionalSofa = traditionalFactory.createSofa();
+
+        System.out.println("Traditional Furniture:");
+        traditionalChair.sitOn();
+        traditionalSofa.relaxOn();
+    }
+}
+
+
+---------------------------------------------------------------SECOND EXAMPLE ----------------------------------------------
+// ---------------- Product Interface ----------------
+interface Vehicle {
+    void start();
+    void stop();
+}
+
+// ---------------- Honda Sub-brands ----------------
+class HondaCivic implements Vehicle {
+    public void start() { System.out.println("Honda Civic is starting"); }
+    public void stop() { System.out.println("Honda Civic is stopping"); }
+}
+
+class HondaAccord implements Vehicle {
+    public void start() { System.out.println("Honda Accord is starting"); }
+    public void stop() { System.out.println("Honda Accord is stopping"); }
+}
+
+// ---------------- Suzuki Sub-brands ----------------
+class SuzukiSwift implements Vehicle {
+    public void start() { System.out.println("Suzuki Swift is starting"); }
+    public void stop() { System.out.println("Suzuki Swift is stopping"); }
+}
+
+class SuzukiBaleno implements Vehicle {
+    public void start() { System.out.println("Suzuki Baleno is starting"); }
+    public void stop() { System.out.println("Suzuki Baleno is stopping"); }
+}
+
+// ---------------- Ferrari Sub-brands ----------------
+class Ferrari488 implements Vehicle {
+    public void start() { System.out.println("Ferrari 488 is roaring to life"); }
+    public void stop() { System.out.println("Ferrari 488 is stopping"); }
+}
+
+class FerrariRoma implements Vehicle {
+    public void start() { System.out.println("Ferrari Roma is starting in style"); }
+    public void stop() { System.out.println("Ferrari Roma is stopping gracefully"); }
+}
+
+// ---------------- Abstract Factory ----------------
+interface CarFactory {
+    Vehicle createVehicle(String model);
+}
+
+// ---------------- Concrete Factories ----------------
+class HondaFactory implements CarFactory {
+    public Vehicle createVehicle(String model) {
+        if (model.equalsIgnoreCase("Civic")) {
+            return new HondaCivic();
+        } else if (model.equalsIgnoreCase("Accord")) {
+            return new HondaAccord();
+        } else {
+            System.out.println("Unknown Honda model: " + model);
+            return null;
+        }
+    }
+}
+
+class SuzukiFactory implements CarFactory {
+    public Vehicle createVehicle(String model) {
+        if (model.equalsIgnoreCase("Swift")) {
+            return new SuzukiSwift();
+        } else if (model.equalsIgnoreCase("Baleno")) {
+            return new SuzukiBaleno();
+        } else {
+            System.out.println("Unknown Suzuki model: " + model);
+            return null;
+        }
+    }
+}
+
+class FerrariFactory implements CarFactory {
+    public Vehicle createVehicle(String model) {
+        if (model.equalsIgnoreCase("488")) {
+            return new Ferrari488();
+        } else if (model.equalsIgnoreCase("Roma")) {
+            return new FerrariRoma();
+        } else {
+            System.out.println("Unknown Ferrari model: " + model);
+            return null;
+        }
+    }
+}
+
+// ---------------- Client ----------------
+public class Main {
+    public static void main(String[] args) {
+        CarFactory hondaFactory = new HondaFactory();
+        Vehicle civic = hondaFactory.createVehicle("Civic");
+        Vehicle accord = hondaFactory.createVehicle("Accord");
+
+        CarFactory suzukiFactory = new SuzukiFactory();
+        Vehicle swift = suzukiFactory.createVehicle("Swift");
+        Vehicle baleno = suzukiFactory.createVehicle("Baleno");
+
+        CarFactory ferrariFactory = new FerrariFactory();
+        Vehicle ferrari488 = ferrariFactory.createVehicle("488");
+        Vehicle roma = ferrariFactory.createVehicle("Roma");
+
+        System.out.println("Honda Cars:");
+        civic.start(); civic.stop();
+        accord.start(); accord.stop();
+
+        System.out.println("----- Suzuki Cars -----");
+        swift.start(); swift.stop();
+        baleno.start(); baleno.stop();
+
+        System.out.println("----- Ferrari Cars -----");
+        ferrari488.start(); ferrari488.stop();
+        roma.start(); roma.stop();
+    }
+}

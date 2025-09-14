@@ -1,0 +1,29 @@
+//Singleton
+class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {}
+
+    static Singleton setObj() {
+        if (instance == null) {
+            System.out.println("First time creating object");
+            instance = new Singleton();
+        }
+        return instance;
+    }
+    void sample() {
+        System.out.println("Working fine");
+    }
+    
+}
+
+public class Main1 {
+    public static void main(String[] args) {
+        Singleton s = Singleton.setObj();
+        s.sample();
+
+        Singleton s1 = Singleton.setObj();
+        s1.sample();
+
+    }
+}

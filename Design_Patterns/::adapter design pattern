@@ -1,0 +1,34 @@
+//adapter design pattern
+interface OnlineBank {
+    void payOnline(double amount);
+}
+class CashOnlyBank {
+    public void payWithCash(double amount) {
+        System.out.println("Paid " + amount + " using CASH at counter.");
+    }
+}
+
+class BankAdapter implements OnlineBank {
+    private CashOnlyBank cashOnlyBank;
+
+    public BankAdapter(CashOnlyBank cashOnlyBank) {
+        this.cashOnlyBank = cashOnlyBank;
+    }
+
+    @Override
+    public void payOnline(double amount) {
+        // Translate online payment request into cash payment
+        System.out.println("Adapter converts ONLINE request → CASH transaction");
+        cashOnlyBank.payWithCash(amount);
+    }
+}
+
+public class Main1 {
+    public static void main(String[] args) {
+        // System expects OnlineBank interface
+        OnlineBank bank = new BankAdapter(new CashOnlyBank());
+
+        bank.payOnline(5000.0);
+    }
+}
+

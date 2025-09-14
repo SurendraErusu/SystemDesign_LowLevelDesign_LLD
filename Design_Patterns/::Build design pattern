@@ -1,0 +1,66 @@
+//Build design pattern
+class House {
+    private String walls;
+    private String roof;
+    private String garage;
+    private String garden;
+
+    // private constructor
+    private House(HouseBuilder builder) {
+        this.walls = builder.walls;
+        this.roof = builder.roof;
+        this.garage = builder.garage;
+        this.garden = builder.garden;
+    }
+
+    public void show() {
+        System.out.println("House with " + walls + ", " + roof + ", " + garage + ", " + garden);
+    }
+
+    // Nested static Builder class
+    public static class HouseBuilder {
+        private String walls;
+        private String roof;
+        private String garage;
+        private String garden;
+
+        public HouseBuilder setWalls(String walls) {
+            this.walls = walls;
+            return this;  // return builder itself
+        }
+
+        public HouseBuilder setRoof(String roof) {
+            this.roof = roof;
+            return this;
+        }
+
+        public HouseBuilder setGarage(String garage) {
+            this.garage = garage;
+            return this;
+        }
+
+        public HouseBuilder setGarden(String garden) {
+            this.garden = garden;
+            return this;
+        }
+
+        // Final build method
+        public House build() {
+            return new House(this);
+        }
+    }
+}
+
+public class Main1 {
+    public static void main(String[] args) {
+        // Easy, readable, flexible
+        House h = new House.HouseBuilder()
+                        .setWalls("Brick Walls")
+                        .setRoof("Concrete Roof")
+                        .setGarage("2-Car Garage")
+                        .setGarden("Rose Garden")
+                        .build();
+
+        h.show();
+    }
+}
