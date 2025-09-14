@@ -1,1 +1,1 @@
-A collection of my solutions to LeetCode and DSA problems in C++, built through consistent practice. Covers core data structures, algorithms, and problem-solving patterns to strengthen coding interview preparation.
+A collection of my System Design (LLD) practice problems and solutions in Java. Covers OOP principles, SOLID, and design patterns like Factory, Builder, Singleton, Adapter, etc., with real-world examples to strengthen interview preparation.
