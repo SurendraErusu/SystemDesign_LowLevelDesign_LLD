@@ -1,0 +1,35 @@
+DIP + Factory Method 
+interface Payment {
+    void payment(int amount);
+}
+
+class credit implements Payment {
+    public void payment(int amount) {
+        System.out.println("credit payment : "+amount);
+    }
+}
+
+class cash implements Payment {
+    public void payment(int amount) {
+        System.out.println("cash payment"+amount);
+    }
+}
+
+class processPayment {
+    public static Payment sendPayment(String pay) {
+        if (pay.equals("Credit")) {
+            return new credit();
+        }
+        if (pay.equals("Cash")) {
+            return new cash();
+        }
+        return null;
+    }    
+}
+// ---------------- Client ----------------
+public class Main {
+    public static void main(String[] args) {
+        Payment p = processPayment.sendPayment("Credit");
+        p.payment(100);
+    }
+}
