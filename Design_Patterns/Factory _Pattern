@@ -1,0 +1,40 @@
+//Factory Pattern
+import java.util.*;
+
+interface vehcile {
+    void parkingLot();
+}
+
+class car implements vehcile {
+    public void parkingLot() {
+        System.out.println("medium size");
+    }
+}
+
+class bike implements vehcile {
+    public void parkingLot() {
+        System.out.println("Small size");
+    }    
+}
+
+class factory {
+    factory f;
+    public static vehcile getVehcile(String vehcileType) {
+        if (vehcileType.equals("Car")) {
+            return new car();
+        }
+        if (vehcileType.equals("Bike")) {
+            return new bike();
+        }
+        else {
+            System.out.println("Not applicable");
+            return null;
+        }
+    }
+}
+public class Main {    
+    public static void main(String[] args) {
+        vehcile v1 = factory.getVehcile("Bike");
+        v1.parkingLot();
+    }
+}
