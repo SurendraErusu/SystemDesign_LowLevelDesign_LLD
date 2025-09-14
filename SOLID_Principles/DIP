@@ -1,0 +1,34 @@
+//DIP
+
+interface operatingSystem {
+    void update(String version);
+}
+class windows implements operatingSystem {
+   public void update(String version) {
+        System.out.println("windows updating to : "+version);
+    }
+}
+class mac implements operatingSystem {
+    public void update(String version) {
+         System.out.println("Mac updating to : "+version);
+     }
+ }
+ class osUpdate {
+    private operatingSystem os;
+    osUpdate(operatingSystem os) {
+        this.os = os;
+    }
+    void sendUpdate(String sendVersion) {
+        os.update(sendVersion);
+    }
+ }
+public class Main {
+    public static void main(String[] args) {
+    osUpdate osupdate = new osUpdate(new mac());
+    osupdate.sendUpdate("MAC OS 18");
+
+    osupdate = new osUpdate(new windows());
+    osupdate.sendUpdate("Window 11");
+
+    }
+}
