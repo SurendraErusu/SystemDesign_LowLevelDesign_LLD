@@ -1,1 +1,236 @@
+import java.util.*;
+
+// ---------- STRATEGY PATTERN ----------
+
+// Strategy interface for move selection
+interface MoveStrategy {
+    int[] getMove(Board board);
+}
+
+// Human move strategy (via console input)
+class HumanMoveStrategy implements MoveStrategy {
+    private Scanner scanner = new Scanner(System.in);
+
+    @Override
+    public int[] getMove(Board board) {
+        System.out.print("Enter row (0-" + (board.getSize() - 1) + "): ");
+        int row = scanner.nextInt();
+        System.out.print("Enter col (0-" + (board.getSize() - 1) + "): ");
+        int col = scanner.nextInt();
+        return new int[]{row, col};
+    }
+}
+
+// ---------- PLAYER ----------
+class Player {
+    private String name;
+    private char symbol;
+    private MoveStrategy strategy;
+
+    public Player(String name, char symbol, MoveStrategy strategy) {
+        this.name = name;
+        this.symbol = symbol;
+        this.strategy = strategy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public int[] makeMove(Board board) {
+        return strategy.getMove(board);
+    }
+}
+
+// ---------- BOARD ----------
+class Board {
+    private char[][] grid;
+    private int size;
+
+    public Board(int size) {
+        this.size = size;
+        grid = new char[size][size];
+        for (int i = 0; i < size; i++) {
+            Arrays.fill(grid[i], '-');
+        }
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public char getCell(int row, int col) {
+        return grid[row][col];
+    }
+
+    public boolean placeMove(int row, int col, char symbol) {
+        if (row < 0 || row >= size || col < 0 || col >= size) {
+            System.out.println("Invalid move! Out of bounds.");
+            return false;
+        }
+        if (grid[row][col] != '-') {
+            System.out.println("Cell already occupied!");
+            return false;
+        }
+        grid[row][col] = symbol;
+        return true;
+    }
+
+    public void printBoard() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public boolean checkWin(char symbol) {
+        // Rows
+        for (int i = 0; i < size; i++) {
+            boolean win = true;
+            for (int j = 0; j < size; j++) {
+                if (grid[i][j] != symbol) {
+                    win = false;
+                    break;
+                }
+            }
+            if (win) return true;
+        }
+        // Cols
+        for (int j = 0; j < size; j++) {
+            boolean win = true;
+            for (int i = 0; i < size; i++) {
+                if (grid[i][j] != symbol) {
+                    win = false;
+                    break;
+                }
+            }
+            if (win) return true;
+        }
+        // Diagonals
+        boolean diag1 = true, diag2 = true;
+        for (int i = 0; i < size; i++) {
+            if (grid[i][i] != symbol) diag1 = false;
+            if (grid[i][size - i - 1] != symbol) diag2 = false;
+        }
+        return diag1 || diag2;
+    }
+
+    public boolean isFull() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (grid[i][j] == '-') return false;
+            }
+        }
+        return true;
+    }
+}
+
+// ---------- STATE PATTERN ----------
+
+// State Interface
+interface GameState {
+    void play(TicTacToe context);
+}
+
+// State: Player X turn
+class PlayerXTurn implements GameState {
+    @Override
+    public void play(TicTacToe context) {
+        Player player = context.getPlayerX();
+        System.out.println(player.getName() + "'s turn (" + player.getSymbol() + ")");
+        context.makeMove(player);
+        if (context.checkGameOver(player)) return;
+        context.setState(new PlayerOTurn());
+    }
+}
+
+// State: Player O turn
+class PlayerOTurn implements GameState {
+    @Override
+    public void play(TicTacToe context) {
+        Player player = context.getPlayerO();
+        System.out.println(player.getName() + "'s turn (" + player.getSymbol() + ")");
+        context.makeMove(player);
+        if (context.checkGameOver(player)) return;
+        context.setState(new PlayerXTurn());
+    }
+}
+
+// State: Game Over
+class GameOver implements GameState {
+    @Override
+    public void play(TicTacToe context) {
+        System.out.println("Game is already over!");
+    }
+}
+
+// ---------- GAME (Context) ----------
+class TicTacToe {
+    private Board board;
+    private Player playerX, playerO;
+    private GameState state;
+
+    public TicTacToe(Player playerX, Player playerO, int size) {
+        this.board = new Board(size);
+        this.playerX = playerX;
+        this.playerO = playerO;
+        this.state = new PlayerXTurn(); // X starts
+    }
+
+    public Player getPlayerX() { return playerX; }
+    public Player getPlayerO() { return playerO; }
+    public GameState getState() { return state; }  // ✅ Added getter
+
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
+
+    public void playTurn() {
+        state.play(this);
+    }
+
+    public void makeMove(Player player) {
+        int[] move = player.makeMove(board);
+        if (!board.placeMove(move[0], move[1], player.getSymbol())) {
+            makeMove(player); // retry if invalid
+        }
+        board.printBoard();
+    }
+
+    public boolean checkGameOver(Player player) {
+        if (board.checkWin(player.getSymbol())) {
+            System.out.println(player.getName() + " wins!");
+            setState(new GameOver());
+            return true;
+        }
+        if (board.isFull()) {
+            System.out.println("It's a draw!");
+            setState(new GameOver());
+            return true;
+        }
+        return false;
+    }
+}
+
+// ---------- DRIVER ----------
+public class Main1 {
+    public static void main(String[] args) {
+        Player p1 = new Player("Alice", 'X', new HumanMoveStrategy());
+        Player p2 = new Player("Bob", 'O', new HumanMoveStrategy());
+
+        TicTacToe game = new TicTacToe(p1, p2, 3);
+
+        // Play until game is over
+        while (!(game.getState() instanceof GameOver)) {
+            game.playTurn();
+        }
+    }
+}
 
